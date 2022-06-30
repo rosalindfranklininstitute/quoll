@@ -66,14 +66,23 @@ class Image:
 
     def show(
         self,
+        slice: Optional[int] = 0,
         vmin: Optional[float] = None,
         vmax: Optional[float] = None,
     ):
         """
-        Plots and displays the image
+        Displays images
+
+        Args:
+            slice (Optional[int], optional): Slice of 3D image to display. Defaults to 0.
+            vmin (Optional[float], optional): vmin of display range. Defaults to None.
+            vmax (Optional[float], optional): vmax of display range. Defaults to None.
         """
         plt.figure()
-        plt.imshow(self.img_data, cmap="Greys", vmin=vmin, vmax=vmax)
+        if len(self.img_data.shape) == 2:
+            plt.imshow(self.img_data, cmap="Greys", vmin=vmin, vmax=vmax)
+        else:
+            plt.imshow(self.img_data[slice, :, :], cmap="Greys", vmin=vmin, vmax=vmax)
         plt.show()
 
 
