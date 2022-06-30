@@ -15,6 +15,7 @@
 import mrcfile
 import os
 import skimage
+import matplotlib.pyplot as plt
 
 from quoll.io.mdoc_parser import Mdoc
 
@@ -63,6 +64,17 @@ class Image:
         self.img_dims = self.img_data.shape
         self.img_bitdepth = self.img_data.dtype
 
+    def show(
+        self,
+        vmin: Optional[float] = None,
+        vmax: Optional[float] = None,
+    ):
+        """
+        Plots and displays the image
+        """
+        plt.figure()
+        plt.imshow(self.img_data, cmap="Greys", vmin=vmin, vmax=vmax)
+        plt.show()
 
 
 class TiltSeries(Image):
