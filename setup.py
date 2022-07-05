@@ -27,6 +27,10 @@ setup(
     license='Apache License, Version 2.0',
     zip_safe=False,
     install_requires=[
+        "mrcfile",
+        "scikit-image",
+        "matplotlib",
+        "miplib",
     ],
     entry_points={
         "console_scripts": [
