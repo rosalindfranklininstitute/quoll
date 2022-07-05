@@ -13,44 +13,45 @@
 # language governing permissions and limitations under the License.
 
 
+import argparse
+import os
+from typing import Callable, Optional
+
 import miplib.data.iterators.fourier_ring_iterators as iterators
-from miplib.data.io import read as miplibread
 import miplib.processing.image as imops
 import miplib.ui.cli.miplib_entry_point_options as opts
 import numpy as np
+import pandas as pd
 from miplib.analysis.resolution import analysis as frc_analysis
 from miplib.analysis.resolution.fourier_ring_correlation import FRC
 from miplib.data.containers.fourier_correlation_data import \
     FourierCorrelationDataCollection
 from miplib.data.containers.image import Image as miplibImage
+from miplib.data.io import read as miplibread
 from miplib.processing import windowing
-import argparse
-from quoll.io import reader
-from quoll.io import tiles
-from typing import Optional
-import pandas as pd
-from typing import Callable
-import os
+from quoll.io import reader, tiles
 
 
 def miplib_oneimg_FRC_calibrated(
-    image: miplibImage, 
+    image: miplibImage,
     args: argparse.Namespace,
-    average: Optional[bool] = True, 
-    trim: Optional[bool] = True, 
-    z_correction: Optional[float] = 1, 
+    average: Optional[bool] = True,
+    trim: Optional[bool] = True,
+    z_correction: Optional[float] = 1,
     calibration_func: Optional[Callable] = None):
-    """
-    A simple utility to calculate a regular FRC with a single image input. 
-    Allows user to choose calibration function
+    """ Calculate single image FRC, adapted from miplib
 
-    :param image: the image as an Image object
-    :param args:  the parameters for the FRC calculation. See *miplib.ui.frc_options*
-                  for details
-    :param calibration_func: the function to return corrected frequencies, given 
-                             uncalibrated frequencies as input.
-    :return:      returns the FRC result as a FourierCorrelationData object
+    Args:
+        image (miplib image object): x-values in the FRC curve
+        args (argparse Namespace): parameters for FRC calculation.
+                                   see *miplib.ui.frc_options* for details.
+                                   default = None
+        calibration_func (callable): function that applies a correction factor to the
+                                     frequencies of the FRC curve to match the 1 img
+                                     FRC to the 2 img FRC
 
+    Returns:
+        FourierCorrelationData object: special dict which contains the results.
     """
     assert isinstance(image, miplibImage)
 
@@ -96,12 +97,33 @@ def miplib_oneimg_FRC_calibrated(
 
 
 def calibration_func(frequencies: list) -> list:
+    """ Calibration function to match 1 image FRC to 2 image FRC.
+
+    Redone for EM images.
+
+    Args:
+        frequencies (list): x-values in the FRC curve
+
+    Returns:
+        list: frequencies with correction factor applied
+    """
     correction = 2.066688385682453 + 0.09896293544729941 * np.log(0.08470690336138625 * frequencies)
     corrected_frequencies = frequencies / correction
     return corrected_frequencies
 
 
 def calc_frc_res(Image: reader.Image):
+    """Calculates one image FRC resolution for quoll Image object
+
+    Args:
+        Image (reader.Image): Quoll.io.reader.Image instance
+
+    Raises:
+        ValueError: if Image is not square
+
+    Returns:
+        FourierCorrelationData object: special dict which contains the results.
+    """
     if Image.img_dims[0] == Image.img_dims[1]:
         miplibImg = miplibread.get_image(Image.filename)
         args = opts.get_frc_script_options([None])
@@ -120,6 +142,19 @@ def calc_local_frc(
     tile_size: int,
     tiles_dir: str,
 ):
+    """ Calculates local FRC on a quoll Image
+
+    Image is split into square tiles and FRC resolution is calculated for all tiles
+
+    Args:
+        Image (reader.Image): Quoll.io.reader.Image instance
+        tile_size (int): length of one side of the square tile in pixels
+        tiles_dir (str): path to directory holding tiles
+
+    Returns:
+        pandas DataFrame: df containing the resolutions in physical units
+                          of all tiles
+    """
     # Create patches
     tiles.create_patches(Image, tile_size, tiles_dir)
 
@@ -132,5 +167,5 @@ def calc_local_frc(
             resolutions["Resolution"][tile] = result.resolution["resolution"]
         except:
             resolutions["Resolution"][tile] = np.nan
-    
+
     return pd.DataFrame.from_dict(resolutions)

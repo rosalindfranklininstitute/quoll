@@ -15,11 +15,9 @@
 
 import os
 # Utility imports
-import shutil
 import unittest
 
 import miplib.ui.cli.miplib_entry_point_options as opts
-import numpy as np
 from miplib.data.io import read as miplibread
 from quoll.frc import oneimg
 from quoll.io import reader
@@ -45,7 +43,7 @@ class OneImgFRCTest(unittest.TestCase):
         )
 
         self.assertIsNotNone(result)
-    
+
     def test_calc_frc_res(self):
         """
         Tests that the one-image FRC can be calculated from quoll.io.reader.Image
@@ -73,11 +71,10 @@ class OneImgFRCTest(unittest.TestCase):
         )
 
         results_df = oneimg.calc_local_frc(Img, tile_size=512, tiles_dir="./data/tiles2/")
-        
+
         # Check that tiles are created and saved
         self.assertNotEqual(len(os.listdir("./data/tiles2")), 0)
 
         # Check that the mean resolution > pxsize (i.e., not NaNs for all tiles, since we know
         # this is not the case with the known data)
         self.assertGreater(results_df.Resolution.mean(), 3.3724)
-        

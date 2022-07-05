@@ -33,7 +33,7 @@ class ReaderTest(unittest.TestCase):
             filename="./data/blobs.tif",
             pixel_size=1,
             unit="nm",)
-        
+
         self.assertEqual(Img.filename, "./data/blobs.tif")
         self.assertEqual(Img.img_bitdepth, "uint8")
         self.assertEqual(Img.pixel_size, 1)
@@ -115,8 +115,8 @@ class ReaderTest(unittest.TestCase):
         Tests that error is raised when no tilt angles are specified when importing tiltseries
         """
         self.assertRaises(
-            ValueError, 
-            reader.TiltSeries, 
+            ValueError,
+            reader.TiltSeries,
             filename="./data/L4_ts_03_sort_bin8.mrc",)
 
 if __name__ == '__main__':

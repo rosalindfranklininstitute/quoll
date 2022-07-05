@@ -14,19 +14,23 @@
 
 
 class Mdoc:
+    """Class to hold all mdoc attributes
+    """
     def __init__(
         self,
         mdoc: str
     ):
         self.mdoc = mdoc
         self.get_mdoc_attributes()
-    
+
     def get_mdoc_attributes(self):
+        """ Gets mdoc attributes as a dict, which is added to attributes as `mdoc_data`.
+        """
         current_z = "Stack"
         mdoc_dict = {current_z: {}}
         with open(self.mdoc, "r") as f:
             mdoc_data = f.readlines()
-        
+
         for line in mdoc_data:
             if line[0] == "[":
                 current_z = int(line.split(" = ")[1].strip("]\n"))
@@ -37,20 +41,33 @@ class Mdoc:
                     value = line.split("=")[1].strip("\n")[1:]
                     mdoc_dict[current_z][key] = value
         self.mdoc_data = mdoc_dict
-    
+
     def get_tilt_angles(self):
+        """Get tilt angles from mdoc and add to `Mdoc` attributes as `tilt_angles`
+        """
         ta = []
         for z in range(len(self.mdoc_data) - 1):
             ta.append(float(self.mdoc_data[z]["TiltAngle"]))
         self.tilt_angles = ta
-    
+
     def get_attr_as_list(self, key):
+        """Get any attribute from the mdoc as a list
+
+        Args:
+            key (str): Attribute to retrieve from mdoc
+
+        Raises:
+            ValueError: if key is not found in mdoc
+
+        Returns:
+            list: value of the attribute from mdoc
+        """
         attr = []
         if key in list(self.mdoc_data[0].keys()):
             for z in range(len(self.mdoc_data) - 1):
                 attr.append(self.mdoc_data[z][key])
         else:
             raise ValueError(
-                "Key {} not found in mdoc. Available keys are {}".format(key,self.mdoc_data[0].keys())
+                f"Key {key} not found in mdoc. Available keys are {self.mdoc_data[0].keys()}"
             )
         return attr

@@ -13,8 +13,9 @@
 # language governing permissions and limitations under the License.
 
 import math
-import numpy as np
 import os
+
+import numpy as np
 import tifffile
 
 
@@ -38,7 +39,7 @@ def extract_tiles(Image, tile_size_x, tile_size_y, pad=True):
     -------
     list
         List containing numpy arrays of shape `(tile_size, tile_size)`
-        taken from the image. 
+        taken from the image.
     """
 
     img = Image.img_data
@@ -59,11 +60,11 @@ def extract_tiles(Image, tile_size_x, tile_size_y, pad=True):
         padded_img[xbounds[0]:xbounds[1], ybounds[0]:ybounds[1]] = img
 
         img_to_tile = padded_img
-    
+
     else:
         # No zero padding but the tiles might not cover the whole image
         img_to_tile = img
-    
+
     # Split into tiles
     tiles = []
     for i in range(nTilesX):
@@ -92,13 +93,13 @@ def create_patches(Image, tile_size, tiles_output, pad=True):
     tiles, (nTilesX, nTilesY) = extract_tiles(Image, tile_size, tile_size, pad)
     resolution = (1/Image.pixel_size, 1/Image.pixel_size)
 
-    if os.path.isdir(tiles_output) == False:
+    if os.path.isdir(tiles_output) is False:
         os.mkdir(tiles_output)
     if len(os.listdir(tiles_output)) != 0:
         for f in list(os.listdir(tiles_output)):
             os.remove(os.path.join(tiles_output, f) )
     for i, tile in enumerate(tiles):
-        tile_fn = os.path.join(tiles_output, "{:03}.tif".format(i))
+        tile_fn = os.path.join(tiles_output, f"{i:03}.tif")
         tifffile.imwrite(
             tile_fn,
             tile.astype('uint8'),

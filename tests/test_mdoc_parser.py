@@ -31,18 +31,22 @@ class MdocTest(unittest.TestCase):
         )
 
     def test_basic_mdoc(self):
+        """ Tests that the test mdoc is read """
         self.assertEqual(type(self.mdoc_test.mdoc), str)
         self.assertEqual(len(self.mdoc_test.mdoc_data), 42)
-    
+
     def test_mdoc_tilt_angle(self):
+        """ Tests that tilt angles are imported correctly """
         self.mdoc_test.get_tilt_angles()
         self.assertEqual(len(self.mdoc_test.tilt_angles), 41)
-    
+
     def test_mdoc_attr_retrieval(self):
+        """ Tests that attributes can be retrieved from the mdoc """
         attr = self.mdoc_test.get_attr_as_list("PixelSpacing")
         self.assertEqual(len(attr), 41)
-    
+
     def test_mdoc_attr_retrieval_error(self):
+        """ Tests that retrieving attributes not present in mdoc raise errors"""
         self.assertRaises(ValueError, self.mdoc_test.get_attr_as_list, "NotAKey")
 
 if __name__ == '__main__':

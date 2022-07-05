@@ -13,18 +13,13 @@
 # language governing permissions and limitations under the License.
 
 
+import os
+import shutil
 # Utility imports
 import unittest
 
-from quoll.io import reader
-from quoll.io import tiles
-
-from miplib.data.io import read as miplibread
-import miplib.ui.cli.miplib_entry_point_options as opts
-
-import os
+from quoll.io import reader, tiles
 from tifffile import TiffFile
-import shutil
 
 
 class TilesTest(unittest.TestCase):
@@ -41,7 +36,7 @@ class TilesTest(unittest.TestCase):
 
         self.assertEqual(len(tiles_list), nTilesX * nTilesY)
         self.assertEqual(tiles_list[0].shape, (128, 128))
-    
+
 
     def test_square_tiles_saving(self):
         """
@@ -64,11 +59,11 @@ class TilesTest(unittest.TestCase):
         with TiffFile(os.path.join(tiles_dir, os.listdir(tiles_dir)[0])) as tif:
             res = tif.pages[0].tags["XResolution"].value
             unit = tif.imagej_metadata["unit"]
-            
+
         self.assertAlmostEqual(res[0]/res[1], 0.02)
         self.assertEqual(unit, "nm")
 
         self.assertEqual(len(Img.tiles), len(os.listdir(tiles_dir)))
         self.assertEqual(Img.tiles[list(Img.tiles.keys())[0]].shape, (128, 128))
 
-        shutil.rmtree(tiles_dir)       
+        shutil.rmtree(tiles_dir)
