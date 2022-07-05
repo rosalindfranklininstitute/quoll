@@ -15,6 +15,7 @@
 import mrcfile
 import os
 import skimage
+import tifffile
 import matplotlib.pyplot as plt
 
 from quoll.io.mdoc_parser import Mdoc
@@ -45,6 +46,9 @@ class Image:
         self.pixel_size = pixel_size
         self.unit = unit
         self.get_image()
+
+        # extra attributes for holding tiles
+        self.tiles = {}
     
 
     def get_image(self):
@@ -52,7 +56,7 @@ class Image:
         Import an image
         """
         if os.path.splitext(self.filename)[1] != ".mrc":
-            self.img_data = skimage.io.imread(self.filename)
+            self.img_data = tifffile.imread(self.filename)
 
         elif os.path.splitext(self.filename)[1] == ".mrc":
             with mrcfile.open(self.filename) as mrc:
