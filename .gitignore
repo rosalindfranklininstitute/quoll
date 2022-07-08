@@ -130,3 +130,4 @@ dmypy.json
 
 # test data which is not required
 data/tiles2/*.tif
+examples/test_tiles_dir/*.tif
