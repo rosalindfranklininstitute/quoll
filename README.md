@@ -21,3 +21,10 @@ conda activate quoll
 ```
 pip install -e .
 ```
+
+
+# Examples
+
+The [examples](https://github.com/rosalindfranklininstitute/quoll/tree/main/examples) folder contains Jupyter notebooks for example usage.
+
+Alternatively the [tests](https://github.com/rosalindfranklininstitute/quoll/tree/main/tests) also go through some ways of using quoll.
