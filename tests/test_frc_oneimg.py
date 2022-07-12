@@ -16,6 +16,7 @@
 import os
 # Utility imports
 import unittest
+import numpy as np
 
 import miplib.ui.cli.miplib_entry_point_options as opts
 from miplib.data.io import read as miplibread
@@ -63,6 +64,7 @@ class OneImgFRCTest(unittest.TestCase):
     def test_calc_local_frc(self):
         """
         Tests on SerialFIB57 2048x2048 patch whether the local resolution is calculated
+        and heatmap is plotted
         """
         Img = reader.Image(
             filename="./data/SerialFIB57_2048x2048.tif",
@@ -78,3 +80,10 @@ class OneImgFRCTest(unittest.TestCase):
         # Check that the mean resolution > pxsize (i.e., not NaNs for all tiles, since we know
         # this is not the case with the known data)
         self.assertGreater(results_df.Resolution.mean(), 3.3724)
+
+        resolution_heatmap = oneimg.plot_resolution_heatmap(
+            Img, results_df
+        )
+
+        # check that the resolution heatmap is not empty
+        self.assertGreater(np.mean(resolution_heatmap), 0)

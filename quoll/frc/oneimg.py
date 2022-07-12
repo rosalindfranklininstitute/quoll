@@ -169,3 +169,16 @@ def calc_local_frc(
             resolutions["Resolution"][tile] = np.nan
 
     return pd.DataFrame.from_dict(resolutions)
+
+
+def plot_resolution_heatmap(
+    Image: reader.Image,
+    results_df: pd.DataFrame,
+):
+    tileshape = list(Image.tiles.values())[0].shape
+    restiles = [np.full(shape=tileshape, fill_value=res) for res in np.array(results_df.Resolution)]
+    heatmap = tiles.reassemble_tiles(
+        tiles=restiles,
+        nTiles=Image.tile_arrangement,
+    )
+    return heatmap
