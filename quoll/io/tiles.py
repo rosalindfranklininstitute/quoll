@@ -109,3 +109,22 @@ def create_patches(Image, tile_size, tiles_output, pad=True):
         )
 
         Image.tiles[tile_fn] = tile.astype('uint8')
+    Image.tile_arrangement = (nTilesX, nTilesY)
+
+
+def reassemble_tiles(
+    tiles: list,
+    nTiles: tuple
+):
+    nTilesX, nTilesY = nTiles
+    tile_size_x = tiles[0].shape[1]
+    tile_size_y = tiles[0].shape[0]
+    img = np.zeros(shape=(nTilesY * tile_size_y, nTilesX * tile_size_x))
+    counter = 0
+    for i in range(nTilesX):
+        for j in range(nTilesY):
+            tile_xbounds = [j*tile_size_y, (j*tile_size_y) + tile_size_y]
+            tile_ybounds = [i*tile_size_x, (i*tile_size_x) + tile_size_x]
+            img[tile_xbounds[0]:tile_xbounds[1], tile_ybounds[0]:tile_ybounds[1]] = tiles[counter]
+            counter += 1
+    return img

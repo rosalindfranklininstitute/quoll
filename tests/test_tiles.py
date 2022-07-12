@@ -15,6 +15,7 @@
 
 import os
 import shutil
+import numpy as np
 # Utility imports
 import unittest
 
@@ -65,5 +66,31 @@ class TilesTest(unittest.TestCase):
 
         self.assertEqual(len(Img.tiles), len(os.listdir(tiles_dir)))
         self.assertEqual(Img.tiles[list(Img.tiles.keys())[0]].shape, (128, 128))
+        self.assertEqual(Img.tile_arrangement, (2,2))
+
+        shutil.rmtree(tiles_dir)
+    
+
+    def test_reassemble_tiles(self):
+        """
+        Tests that tiles are reassembled correctly
+        """
+        Img = reader.Image("./data/blobs.tif", pixel_size=50, unit="nm")
+
+        tiles_dir = "./data/tiles"
+
+        tiles.create_patches(
+            Img,
+            tile_size=128,
+            tiles_output=tiles_dir,
+            pad=True
+        )
+
+        reassembled = tiles.reassemble_tiles(
+            list(Img.tiles.values()),
+            Img.tile_arrangement,
+        )
+
+        self.assertTrue(np.allclose(reassembled, Img.img_data))
 
         shutil.rmtree(tiles_dir)

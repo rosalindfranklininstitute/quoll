@@ -38,7 +38,7 @@ class ReaderTest(unittest.TestCase):
         self.assertEqual(Img.img_bitdepth, "uint8")
         self.assertEqual(Img.pixel_size, 1)
         self.assertEqual(Img.unit, "nm")
-        self.assertEqual(Img.img_dims, (254,256))
+        self.assertEqual(Img.img_dims, (256,256))
 
     def test_2D_mrcreader(self):
         """
