@@ -15,7 +15,7 @@
 
 # Utility imports
 import unittest
-from importlib.metadata import version
+import sys
 
 
 class ImportModuleTest(unittest.TestCase):
@@ -27,7 +27,7 @@ class ImportModuleTest(unittest.TestCase):
         """
         Tests that the version string can be correctly accessed from the root of the quoll project.
         """
-        self.assertEqual(type(version("quoll")), str)
+        self.assertTrue("quoll" in sys.modules.keys())
 
 
 if __name__ == '__main__':
