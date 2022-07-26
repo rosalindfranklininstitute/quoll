@@ -12,11 +12,11 @@ dependencies = [
     "miplib"
 ]
 authors = [
-  { name="Elaine Ho", email="elaine.ho@rfi.ac.uk" },
+    {name="Elaine Ho", email="elaine.ho@rfi.ac.uk"}
 ]
 description = "Image quality assessment for electron tomography"
 readme = "README.md"
-license = { file="LICENSE" }
+license = {file="LICENSE"}
 requires-python = ">=3.6"
 classifiers = [
     "Programming Language :: Python :: 3",
@@ -25,7 +25,7 @@ classifiers = [
 ]
 
 [tool.setuptools.packages.find]
-where = ["quoll"]  # list of folders that contain the packages (["."] by default)
+where = ["src"]  # list of folders that contain the packages (["."] by default)
 include = ["*"]  # package names should match these glob patterns (["*"] by default)
 exclude = ["tests"]  # exclude packages matching these glob patterns (empty by default)
 
