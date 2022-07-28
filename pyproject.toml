@@ -37,3 +37,6 @@ exclude = ["tests"]  # exclude packages matching these glob patterns (empty by d
 [project.urls]
 "Homepage" = "https://github.com/rosalindfranklininstitute/quoll"
 "Bug Tracker" = "https://github.com/rosalindfranklininstitute/quoll/issues"
+
+[project.scripts] 
+oneimgfrc = "quoll.ui.frc_oneimg_ui:oneimgfrc"
