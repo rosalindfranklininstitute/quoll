@@ -16,6 +16,7 @@
 # Utility imports
 import unittest
 import sys
+import quoll
 
 
 class ImportModuleTest(unittest.TestCase):
