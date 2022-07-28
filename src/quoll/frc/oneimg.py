@@ -180,6 +180,21 @@ def plot_resolution_heatmap(
     save_overlay: Optional[bool] = False,
     save_heatmap: Optional[bool] = False,
 ):
+    """Generate a heatmap of resolutions
+    
+    Optionally display the heatmap overlaid on the original image,
+    save this overlay, or save the heatmap alone.
+
+    Args:
+        Image (reader.Image): Quoll.reader.Image object
+        results_df (pd.DataFrame): output of `oneimg.calc_local_frc`
+        show (Optional[bool], optional): Show the overlay. Defaults to False.
+        save_overlay (Optional[bool], optional): Saves overlay as svg. Defaults to False.
+        save_heatmap (Optional[bool], optional): Saves heatmap as tif. Defaults to False.
+
+    Returns:
+        _type_: _description_
+    """
     tileshape = list(Image.tiles.values())[0].shape
     restiles = [np.full(shape=tileshape, fill_value=res) for res in np.array(results_df.Resolution)]
     heatmap = tiles.reassemble_tiles(
@@ -203,6 +218,7 @@ def plot_resolution_heatmap(
         plot_overlay()
         ov_fname = f"{os.path.splitext(Image.filename)[0]}_overlay.svg"
         plt.savefig(ov_fname)
+        print(f"Overlay saved as {ov_fname}")
         
     if save_heatmap is True:
         heatmap_fname = f"{os.path.splitext(Image.filename)[0]}_heatmap.tif"
@@ -210,5 +226,6 @@ def plot_resolution_heatmap(
             heatmap_fname,
             heatmap.astype("uint8"),
         )
+        print(f"Heatmap saved as {heatmap_fname}")
         
     return heatmap
