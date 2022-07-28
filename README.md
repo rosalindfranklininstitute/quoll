@@ -3,16 +3,31 @@ Image quality assessment for electron tomography
 
 # Installation
 
+## Users (pip)
+
+1. Create a new conda environment, name it whatever you'd like, but don't forget to activate it
+```
+conda create -n quoll python=3.7
+conda activate quoll
+```
+
+2. Pip install
+```
+pip install quoll
+```
+
+## Developers
+
 1. Clone the repository. In a terminal:
 
 ```
 git clone https://github.com/rosalindfranklininstitute/quoll.git
 ```
 
-2. Navigate to the Quoll directory and create a new conda environment for Quoll. This installs all the pre-requisite libraries to use Quoll. Don't forget to activate this environment
+2. Navigate to the Quoll directory and create a new conda environment for Quoll. Don't forget to activate this environment
 
 ```
-conda env create -n quoll -f quoll_env.yaml
+conda env create -n quoll python=3.7
 conda activate quoll
 ```
 
