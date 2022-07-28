@@ -132,6 +132,8 @@ dmypy.json
 data/tiles2/*.tif
 examples/test_tiles_dir/*.tif
 examples/test_heatmap.tif
+data/*.tif
+data/*.svg
 
 # vscode files
 .vscode/settings.json
