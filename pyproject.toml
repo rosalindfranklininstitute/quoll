@@ -6,10 +6,15 @@ build-backend = "setuptools.build_meta"
 name = "quoll"
 version = "0.0"
 dependencies = [
-    "mrcfile",
-    "scikit-image",
     "matplotlib",
-    "miplib"
+    "miplib",
+    "mrcfile",
+    "notebook",
+    "numpy",
+    "pandas",
+    "scikit-image",
+    "scipy",
+    "tifffile>2021",
 ]
 authors = [
     {name="Elaine Ho", email="elaine.ho@rfi.ac.uk"}
