@@ -17,11 +17,13 @@ import argparse
 import os
 from typing import Callable, Optional
 
+import matplotlib.pyplot as plt
 import miplib.data.iterators.fourier_ring_iterators as iterators
 import miplib.processing.image as imops
 import miplib.ui.cli.miplib_entry_point_options as opts
 import numpy as np
 import pandas as pd
+import tifffile
 from miplib.analysis.resolution import analysis as frc_analysis
 from miplib.analysis.resolution.fourier_ring_correlation import FRC
 from miplib.data.containers.fourier_correlation_data import \
@@ -174,6 +176,9 @@ def calc_local_frc(
 def plot_resolution_heatmap(
     Image: reader.Image,
     results_df: pd.DataFrame,
+    show: Optional[bool] = False,
+    save_overlay: Optional[bool] = False,
+    save_heatmap: Optional[bool] = False,
 ):
     tileshape = list(Image.tiles.values())[0].shape
     restiles = [np.full(shape=tileshape, fill_value=res) for res in np.array(results_df.Resolution)]
@@ -181,4 +186,29 @@ def plot_resolution_heatmap(
         tiles=restiles,
         nTiles=Image.tile_arrangement,
     )
+
+
+    def plot_overlay():
+        plt.figure()
+        plt.imshow(Image.img_data, cmap="Greys_r")
+        plt.imshow(heatmap, cmap="viridis", alpha=0.4)
+        plt.colorbar(label=f"Resolution ({Image.unit})")
+
+
+    if show is True:
+        plot_overlay()
+        plt.show()
+    
+    if save_overlay is True:
+        plot_overlay()
+        ov_fname = f"{os.path.splitext(Image.filename)[0]}_overlay.svg"
+        plt.savefig(ov_fname)
+        
+    if save_heatmap is True:
+        heatmap_fname = f"{os.path.splitext(Image.filename)[0]}_heatmap.tif"
+        tifffile.imwrite(
+            heatmap_fname,
+            heatmap.astype("uint8"),
+        )
+        
     return heatmap

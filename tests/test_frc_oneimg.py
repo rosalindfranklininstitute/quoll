@@ -82,8 +82,14 @@ class OneImgFRCTest(unittest.TestCase):
         self.assertGreater(results_df.Resolution.mean(), 3.3724)
 
         resolution_heatmap = oneimg.plot_resolution_heatmap(
-            Img, results_df
+            Img, results_df,
+            save_overlay=True,
+            save_heatmap=True
         )
+
+        self.assertTrue(os.path.exists("./data/SerialFIB57_2048x2048_overlay.svg"))
+        self.assertTrue(os.path.exists("./data/SerialFIB57_2048x2048_heatmap.tif"))
 
         # check that the resolution heatmap is not empty
         self.assertGreater(np.mean(resolution_heatmap), 0)
+
