@@ -1,5 +1,9 @@
 # quoll
+
+[![DOI](https://zenodo.org/badge/507917208.svg)](https://zenodo.org/badge/latestdoi/507917208)
+
 Image quality assessment for electron tomography
+
 
 # Installation
 
