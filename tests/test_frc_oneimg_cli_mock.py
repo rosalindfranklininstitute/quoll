@@ -15,8 +15,9 @@
 
 from unittest import mock
 import unittest
-import argparse
+import shutil
 import os
+import sys
 from quoll.ui import frc_oneimg_ui
 
 class OneImgFRCCLIMockTest(unittest.TestCase):
@@ -32,10 +33,49 @@ class OneImgFRCCLIMockTest(unittest.TestCase):
         "3.3724",
         "--save_csv"],
     )
-    def test_oneimgfrc_notiles(self):
+    def test_oneimgfrc_notiles_savecsv(self):
         frc_oneimg_ui.oneimgfrc()
         self.assertTrue(os.path.exists("./data/042_oneimgfrc.csv"))
         os.remove("./data/042_oneimgfrc.csv")
+    
+    @mock.patch(
+        'sys.argv',
+        ["oneimgFRC",
+         "./data/SerialFIB57_2048x2048.tif",
+         "3.3724",
+         "-ts",
+         "512",
+         "-td",
+         "./data/tiles",
+         "--save_csv"
+         ]
+    )
+    def test_oneimgfrc_tiles_savecsv(self):
+        frc_oneimg_ui.oneimgfrc()
+        self.assertTrue(os.path.exists("./data/SerialFIB57_2048x2048_oneimgfrc.csv"))
+        os.remove("./data/SerialFIB57_2048x2048_oneimgfrc.csv")
+        shutil.rmtree("./data/tiles", ignore_errors=True)
+
+    @mock.patch(
+        'sys.argv',
+        ["oneimgFRC",
+         "./data/SerialFIB57_2048x2048.tif",
+         "3.3724",
+         "-ts",
+         "512",
+         "-td",
+         "./data/tiles",
+         "--save_heatmap",
+         "--save_overlay",]
+    )
+    def test_oneimgfrc_tiles_saveplots(self):
+        frc_oneimg_ui.oneimgfrc()
+        self.assertTrue(os.path.exists("./data/SerialFIB57_2048x2048_overlay.svg"))
+        self.assertTrue(os.path.exists("./data/SerialFIB57_2048x2048_heatmap.tif"))
+        os.remove("./data/SerialFIB57_2048x2048_overlay.svg")
+        os.remove("./data/SerialFIB57_2048x2048_heatmap.tif")
+        shutil.rmtree("./data/tiles", ignore_errors=True)
+
 
 if __name__ == "__main__":
     unittest.main()
