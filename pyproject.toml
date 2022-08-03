@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "quoll"
-version = "0.0.0"
+version = "0.0.1"
 dependencies = [
     "jpype1==0.7.5",
     "pims==0.4.1",
