@@ -33,7 +33,11 @@ class OneImgFRCCLITest(unittest.TestCase):
             "./data/042.tif",
             "3.3724"
         ]
-        run = subprocess.run(cmd, stderr=subprocess.STDOUT)
+        run = subprocess.run(
+            cmd,
+            cwd=os.path.dirname(os.path.dirname(os.path.realpath(__file__))),
+            stderr=subprocess.STDOUT
+        )
 
         self.assertIsNone(run.stderr)
     
@@ -47,7 +51,11 @@ class OneImgFRCCLITest(unittest.TestCase):
             "3.3724",
             "--save_csv"
         ]
-        run = subprocess.run(cmd, stderr=subprocess.STDOUT)
+        run = subprocess.run(
+            cmd,
+            cwd=os.path.dirname(os.path.dirname(os.path.realpath(__file__))),
+            stderr=subprocess.STDOUT
+        )
         self.assertTrue(os.path.exists("./data/042_oneimgfrc.csv"))
         os.remove("./data/042_oneimgfrc.csv")
     
@@ -66,7 +74,11 @@ class OneImgFRCCLITest(unittest.TestCase):
             "-td",
             "./data/tiles"
         ]
-        run = subprocess.run(cmd, stderr=subprocess.STDOUT)
+        run = subprocess.run(
+            cmd,
+            cwd=os.path.dirname(os.path.dirname(os.path.realpath(__file__))),
+            stderr=subprocess.STDOUT
+        )
         self.assertIsNone(run.stderr)
     
     def test_oneimgfrc_tiles_saveresults(self):
@@ -86,7 +98,11 @@ class OneImgFRCCLITest(unittest.TestCase):
             "./data/tiles",
             "--save_csv"
         ]
-        run = subprocess.run(cmd, stderr=subprocess.STDOUT)
+        run = subprocess.run(
+            cmd,
+            cwd=os.path.dirname(os.path.dirname(os.path.realpath(__file__))),
+            stderr=subprocess.STDOUT
+        )
         self.assertTrue(os.path.exists("./data/SerialFIB57_2048x2048_oneimgfrc.csv"))
         os.remove("./data/SerialFIB57_2048x2048_oneimgfrc.csv")
     
@@ -108,7 +124,11 @@ class OneImgFRCCLITest(unittest.TestCase):
             "--save_heatmap",
             "--save_overlay",
         ]
-        run = subprocess.run(cmd, stderr=subprocess.STDOUT)
+        run = subprocess.run(
+            cmd,
+            cwd=os.path.dirname(os.path.dirname(os.path.realpath(__file__))),
+            stderr=subprocess.STDOUT
+        )
         self.assertTrue(os.path.exists("./data/SerialFIB57_2048x2048_overlay.svg"))
         self.assertTrue(os.path.exists("./data/SerialFIB57_2048x2048_heatmap.tif"))
         os.remove("./data/SerialFIB57_2048x2048_overlay.svg")
