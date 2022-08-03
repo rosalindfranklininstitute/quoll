@@ -16,6 +16,7 @@
 # Utility imports
 import unittest
 import sys
+import os
 import quoll
 
 
@@ -29,6 +30,13 @@ class ImportModuleTest(unittest.TestCase):
         Tests that the version string can be correctly accessed from the root of the quoll project.
         """
         self.assertTrue("quoll" in sys.modules.keys())
+    
+    def test_frc_oneimg_entrypoint(self):
+        """
+        Tests that the entry point for oneimgfrc works
+        """
+        exit_status = os.system("oneimgfrc -h")
+        self.assertEqual(exit_status, 0)
 
 
 if __name__ == '__main__':

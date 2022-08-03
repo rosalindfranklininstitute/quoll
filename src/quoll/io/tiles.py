@@ -97,7 +97,10 @@ def create_patches(Image, tile_size, tiles_output, pad=True):
         os.mkdir(tiles_output)
     if len(os.listdir(tiles_output)) != 0:
         for f in list(os.listdir(tiles_output)):
-            os.remove(os.path.join(tiles_output, f) )
+            try:
+                os.remove(os.path.join(tiles_output, f))
+            except:
+                print(f"Could not remove {f}")
     for i, tile in enumerate(tiles):
         tile_fn = os.path.join(tiles_output, f"{i:03}.tif")
         tifffile.imwrite(
