@@ -1,5 +1,7 @@
 [build-system]
-requires = ["setuptools"]
+requires = ["setuptools",
+    "wheel",
+]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -9,14 +11,15 @@ dependencies = [
     "jpype1==0.7.5",
     "pims==0.4.1",
     "matplotlib",
-    "miplib",
     "mrcfile",
     "notebook",
     "numpy",
     "pandas",
     "scikit-image",
     "scipy",
-    "tifffile>2021",
+    "tifffile",
+    "miplib @ https://github.com/perdigao1/miplib/releases/download/windows/miplib-1.0.5.tar.gz",
+
 ]
 authors = [
     {name="Elaine Ho", email="elaine.ho@rfi.ac.uk"}
