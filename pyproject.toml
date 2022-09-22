@@ -18,7 +18,7 @@ dependencies = [
     "scikit-image",
     "scipy",
     "tifffile",
-    "miplib @ https://github.com/perdigao1/miplib/releases/download/windows/miplib-1.0.5.tar.gz",
+    "miplib @ https://github.com/perdigao1/miplib/releases/download/windows/miplib-1.0.5-cp38-cp38-win_amd64.whl",
 
 ]
 authors = [
