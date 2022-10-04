@@ -8,8 +8,8 @@ build-backend = "setuptools.build_meta"
 name = "quoll"
 version = "0.0.1"
 dependencies = [
-    # "jpype1", #installed by miplib
-    # "pims", #installed by miplib
+    "jpype1==0.7.5", #installed by miplib but no version specified
+    "pims==0.4.1", #installed by miplib but no version specified
     "matplotlib",
     "mrcfile",
     "notebook",
@@ -27,7 +27,7 @@ authors = [
 description = "Image quality assessment for electron tomography"
 readme = "README.md"
 license = {file="LICENSE"}
-requires-python = ">=3.6"
+requires-python = ">=3.6" #It may not work with python 3.8 or above
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: Apache Software License",
