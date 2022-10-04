@@ -8,8 +8,8 @@ build-backend = "setuptools.build_meta"
 name = "quoll"
 version = "0.0.1"
 dependencies = [
-    "jpype1==0.7.5",
-    "pims==0.4.1",
+    # "jpype1", #installed by miplib
+    # "pims", #installed by miplib
     "matplotlib",
     "mrcfile",
     "notebook",
