@@ -32,6 +32,7 @@ from miplib.data.containers.image import Image as miplibImage
 from miplib.data.io import read as miplibread
 from miplib.processing import windowing
 from quoll.io import reader, tiles
+from quoll.frc import frc_calibration_functions as cf
 
 
 def miplib_oneimg_FRC_calibrated(
@@ -96,22 +97,6 @@ def miplib_oneimg_FRC_calibrated(
     result = analyzer.execute(z_correction=z_correction)[0]
 
     return result
-
-
-def calibration_func_RFI(frequencies: list) -> list:
-    """ Calibration function to match 1 image FRC to 2 image FRC.
-
-    Redone for EM images.
-
-    Args:
-        frequencies (list): x-values in the FRC curve
-
-    Returns:
-        list: frequencies with correction factor applied
-    """
-    correction = 2.066688385682453 + 0.09896293544729941 * np.log(0.08470690336138625 * frequencies)
-    corrected_frequencies = frequencies / correction
-    return corrected_frequencies
 
 
 def calc_frc_res(
