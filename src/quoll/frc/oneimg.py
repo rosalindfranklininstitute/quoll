@@ -99,6 +99,22 @@ def miplib_oneimg_FRC_calibrated(
     return result
 
 
+def calibration_func_RFI(frequencies: list) -> list:
+    """ Calibration function to match 1 image FRC to 2 image FRC.
+
+    Redone for EM images.
+
+    Args:
+        frequencies (list): x-values in the FRC curve
+
+    Returns:
+        list: frequencies with correction factor applied
+    """
+    correction = 2.066688385682453 + 0.09896293544729941 * np.log(0.08470690336138625 * frequencies)
+    corrected_frequencies = frequencies / correction
+    return corrected_frequencies
+
+
 def calc_frc_res(
     Image: reader.Image,
     calibration_func: Optional[Callable] = None
