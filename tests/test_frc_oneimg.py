@@ -41,7 +41,7 @@ class OneImgFRCTest(unittest.TestCase):
         result = oneimg.miplib_oneimg_FRC_calibrated(
             miplibImg,
             args,
-            oneimg.calibration_func_RFI
+            calibration_func=None
         )
 
         self.assertIsNotNone(result)
@@ -53,7 +53,7 @@ class OneImgFRCTest(unittest.TestCase):
         Img = reader.Image("./data/042.tif")
         result = oneimg.calc_frc_res(
             Image=Img,
-            calibration_func=oneimg.calibration_func_RFI
+            calibration_func=cf.calibration_func_RFI
         )
         self.assertAlmostEqual(result.resolution["resolution"], 32.1159278)
         self.assertIsNotNone(result)
@@ -80,7 +80,7 @@ class OneImgFRCTest(unittest.TestCase):
             Img,
             tile_size=512,
             tiles_dir="./data/tiles2/",
-            calibration_func=oneimg.calibration_func_RFI)
+            calibration_func=cf.calibration_func_RFI)
 
         # Check that tiles are created and saved
         self.assertNotEqual(len(os.listdir("./data/tiles2")), 0)
