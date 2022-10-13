@@ -98,7 +98,7 @@ def miplib_oneimg_FRC_calibrated(
     return result
 
 
-def calibration_func(frequencies: list) -> list:
+def calibration_func_RFI(frequencies: list) -> list:
     """ Calibration function to match 1 image FRC to 2 image FRC.
 
     Redone for EM images.
@@ -114,11 +114,18 @@ def calibration_func(frequencies: list) -> list:
     return corrected_frequencies
 
 
-def calc_frc_res(Image: reader.Image):
+def calc_frc_res(
+    Image: reader.Image,
+    calibration_func: Optional[Callable] = None
+    ):
     """Calculates one image FRC resolution for quoll Image object
 
     Args:
         Image (reader.Image): Quoll.io.reader.Image instance
+        calibration_func (callable): function that applies a correction factor to the
+                                    frequencies of the FRC curve to match the 1 img
+                                    FRC to the 2 img FRC. If None, no calibration is
+                                    applied.
 
     Raises:
         ValueError: if Image is not square
@@ -143,6 +150,7 @@ def calc_local_frc(
     Image: reader.Image,
     tile_size: int,
     tiles_dir: str,
+    calibration_func: Optional[Callable] = None
 ):
     """ Calculates local FRC on a quoll Image
 
@@ -152,6 +160,10 @@ def calc_local_frc(
         Image (reader.Image): Quoll.io.reader.Image instance
         tile_size (int): length of one side of the square tile in pixels
         tiles_dir (str): path to directory holding tiles
+        calibration_func (callable): function that applies a correction factor to the
+                                    frequencies of the FRC curve to match the 1 img
+                                    FRC to the 2 img FRC. If None, no calibration is
+                                    applied.
 
     Returns:
         pandas DataFrame: df containing the resolutions in physical units
@@ -165,7 +177,7 @@ def calc_local_frc(
     for tile in os.listdir(tiles_dir):
         try:
             Img = reader.Image(os.path.join(tiles_dir, tile))
-            result = calc_frc_res(Img)
+            result = calc_frc_res(Img, calibration_func)
             resolutions["Resolution"][tile] = result.resolution["resolution"]
         except:
             resolutions["Resolution"][tile] = np.nan
