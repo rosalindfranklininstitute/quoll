@@ -19,7 +19,8 @@ import unittest
 import numpy as np
 
 import miplib.ui.cli.miplib_entry_point_options as opts
-from miplib.data.io import read as miplibread
+# from miplib.data.io import read as miplibread
+from miplib.data.containers.image import Image as miplibImage
 from quoll.frc import oneimg
 from quoll.io import reader
 
@@ -29,21 +30,6 @@ class OneImgFRCTest(unittest.TestCase):
     Tests the one image FRC
     Test image = ChargeSuppression/SerialFIB-79, Tile 42
     """
-
-    def test_miplib_basic(self):
-        """
-        Tests that the adapted miplib one image FRC works with basic case
-        """
-        miplibImg = miplibread.get_image("./data/042.tif")
-        args = opts.get_frc_script_options([None])
-
-        result = oneimg.miplib_oneimg_FRC_calibrated(
-            miplibImg,
-            args,
-            oneimg.calibration_func
-        )
-
-        self.assertIsNotNone(result)
 
     def test_calc_frc_res(self):
         """
