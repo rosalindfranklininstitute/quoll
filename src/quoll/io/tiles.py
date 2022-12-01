@@ -76,7 +76,7 @@ def extract_tiles(Image, tile_size_x, tile_size_y, pad=True):
     return tiles, (nTilesX, nTilesY)
 
 
-def create_patches(Image, tile_size, tiles_output, pad=True):
+def create_patches(Image, tile_size, tiles_output=None, pad=True):
     """Split an image into square patches. All patches will be square if pad=True.
     Otherwise, patches at the edges do not fit neatly into the square patches will
     be returned (these are not square). Patches are saved as .tif's in tiles_output.
@@ -93,25 +93,31 @@ def create_patches(Image, tile_size, tiles_output, pad=True):
     tiles, (nTilesX, nTilesY) = extract_tiles(Image, tile_size, tile_size, pad)
     resolution = (1/Image.pixel_size, 1/Image.pixel_size)
 
-    if os.path.isdir(tiles_output) is False:
-        os.mkdir(tiles_output)
-    if len(os.listdir(tiles_output)) != 0:
-        for f in list(os.listdir(tiles_output)):
-            try:
-                os.remove(os.path.join(tiles_output, f))
-            except:
-                print(f"Could not remove {f}")
-    for i, tile in enumerate(tiles):
-        tile_fn = os.path.join(tiles_output, f"{i:03}.tif")
-        tifffile.imwrite(
-            tile_fn,
-            tile.astype('uint8'),
-            imagej=True,
-            resolution=resolution,
-            metadata={'unit': Image.unit}
-        )
+    if tiles_output is not None:
+        if os.path.isdir(tiles_output) is False:
+            os.mkdir(tiles_output)
+        if len(os.listdir(tiles_output)) != 0:
+            for f in list(os.listdir(tiles_output)):
+                try:
+                    os.remove(os.path.join(tiles_output, f))
+                except:
+                    print(f"Could not remove {f}")
+        for i, tile in enumerate(tiles):
+            tile_fn = os.path.join(tiles_output, f"{i:03}.tif")
+            tifffile.imwrite(
+                tile_fn,
+                tile.astype('uint8'),
+                imagej=True,
+                resolution=resolution,
+                metadata={'unit': Image.unit}
+            )
 
-        Image.tiles[tile_fn] = tile.astype('uint8')
+            Image.tiles[i] = tile.astype('uint8')
+
+    else:
+        for i, tile in enumerate(tiles):
+            Image.tiles[i] = tile.astype('uint8')
+    
     Image.tile_arrangement = (nTilesX, nTilesY)
 
 
