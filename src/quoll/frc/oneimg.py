@@ -32,6 +32,7 @@ from miplib.data.containers.image import Image as miplibImage
 from miplib.processing import windowing
 
 from quoll.io import reader, tiles
+from quoll.frc import frc_calibration_functions as cf
 
 
 def miplib_oneimg_FRC_calibrated(
@@ -102,27 +103,18 @@ def miplib_oneimg_FRC_calibrated(
     return result
 
 
-def calibration_func(frequencies: list) -> list:
-    """ Calibration function to match 1 image FRC to 2 image FRC.
-
-    Redone for EM images.
-
-    Args:
-        frequencies (list): x-values in the FRC curve
-
-    Returns:
-        list: frequencies with correction factor applied
-    """
-    correction = 2.066688385682453 + 0.09896293544729941 * np.log(0.08470690336138625 * frequencies)
-    corrected_frequencies = frequencies / correction
-    return corrected_frequencies
-
-
-def calc_frc_res(Image: reader.Image):
+def calc_frc_res(
+    Image: reader.Image,
+    calibration_func: Optional[Callable] = None
+    ):
     """Calculates one image FRC resolution for quoll Image object
 
     Args:
         Image (reader.Image): Quoll.io.reader.Image instance
+        calibration_func (callable): function that applies a correction factor to the
+                                    frequencies of the FRC curve to match the 1 img
+                                    FRC to the 2 img FRC. If None, no calibration is
+                                    applied.
 
     Raises:
         ValueError: if Image is not square
@@ -150,6 +142,7 @@ def calc_local_frc(
     Image: reader.Image,
     tile_size: int,
     tiles_dir: Optional[str] = None,
+    calibration_func: Optional[Callable] = None
 ):
     """ Calculates local FRC on a quoll Image
 
@@ -161,7 +154,10 @@ def calc_local_frc(
         tile_size (int): length of one side of the square tile in pixels
         tiles_dir (str): path to directory holding tiles, none by default.
                          Tiles only saved if tiles_dir is not none.
-
+        calibration_func (callable): function that applies a correction factor to the
+                                    frequencies of the FRC curve to match the 1 img
+                                    FRC to the 2 img FRC. If None, no calibration is
+                                    applied.
     Returns:
         pandas DataFrame: df containing the resolutions in physical units
                           of all tiles
@@ -184,6 +180,7 @@ def calc_local_frc(
             )
             result = calc_frc_res(Img)
             resolutions["Resolution"][i] = result.resolution["resolution"]
+
         except:
             resolutions["Resolution"][i] = np.nan
 

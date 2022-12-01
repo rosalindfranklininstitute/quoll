@@ -76,6 +76,22 @@ class OneImgFRCCLIMockTest(unittest.TestCase):
         os.remove("./data/SerialFIB57_2048x2048_heatmap.tif")
         shutil.rmtree("./data/tiles", ignore_errors=True)
 
+    @mock.patch(
+        'sys.argv',
+        ["oneimgfrc",
+        "./data/042.tif",
+        "3.3724",
+        "-cf",
+        "calibration_func_RFI",
+        "--save_csv"],
+    )
+    def test_oneimgfrc_RFICalibrationFunc(self):
+        frc_oneimg_ui.oneimgfrc()
+        self.assertTrue(os.path.exists("./data/042_oneimgfrc.csv"))
+        with open("./data/042_oneimgfrc.csv", "r") as f:
+            self.assertAlmostEqual(float(f.read()), 32.11592783389754)
+        os.remove("./data/042_oneimgfrc.csv")
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -14,8 +14,29 @@
 
 import argparse
 import os
+from inspect import getmembers
+
+from matplotlib.pyplot import get
 from quoll.frc import oneimg
 from quoll.io import reader
+from quoll.frc import frc_calibration_functions as cf
+
+
+def get_calibration_functions() -> dict:
+    """ Gets a dict of available calibration functions in `frc.frc_calibration_functions`
+    Valid calibration functions all start with "calibration_func"
+
+    Returns:
+        dict: Dict of available calibration functions with keys = strings of the
+              calibration function and values = the functions themselves
+    """
+    calibration_functions = {None: None}
+
+    for member in getmembers(cf):
+        if member[0].startswith("calibration_func"):
+            calibration_functions[member[0]] = member[1]
+
+    return calibration_functions
 
 
 def get_args_oneimgFRC():
@@ -35,6 +56,19 @@ def get_args_oneimgFRC():
         type=str,
         default="nm",
         help="Physical unit of pixel size, default is nm"
+    )
+    parser.add_argument(
+        "-cf", "--calibration_func",
+        default=None,
+        choices=get_calibration_functions().keys(),
+        help="Function defining correction to match 1 image FRC to \
+            2 image FRC. This function is instrument specific, so only \
+            needs to be determined once for each instrument. \
+            Defaults to None (no calibration applied) \
+            This function applies a correction factor to return frequencies \
+            on the 1-img FRC curve to match the 2-img version. \
+            To set a custom calibration function please add your function to \
+            frc.frc_calibration_functions.py."
     )
     parser.add_argument(
         "-ts", "--tile_size",
@@ -83,8 +117,13 @@ def oneimgfrc():
         unit=args.unit
     )
 
+    cal_funcs = get_calibration_functions()
+
     if args.tile_size == 0:
-        result = oneimg.calc_frc_res(Img)
+        result = oneimg.calc_frc_res(
+            Img,
+            calibration_func=cal_funcs[args.calibration_func]
+        )
         print(f"Resolution of {Img.filename} is {result.resolution['resolution']} {Img.unit}")
 
         if args.save_csv is True:
@@ -96,6 +135,7 @@ def oneimgfrc():
             Img,
             tile_size=args.tile_size,
             tiles_dir=args.tiles_dir,
+            calibration_func=cal_funcs[args.calibration_func]
         )
 
         print(results_df.Resolution.describe())

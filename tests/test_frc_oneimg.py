@@ -22,6 +22,7 @@ import miplib.ui.cli.miplib_entry_point_options as opts
 # from miplib.data.io import read as miplibread
 from miplib.data.containers.image import Image as miplibImage
 from quoll.frc import oneimg
+from quoll.frc import frc_calibration_functions as cf
 from quoll.io import reader
 
 
@@ -36,7 +37,10 @@ class OneImgFRCTest(unittest.TestCase):
         Tests that the one-image FRC can be calculated from quoll.io.reader.Image
         """
         Img = reader.Image("./data/042.tif", pixel_size=3.3724)
-        result = oneimg.calc_frc_res(Img)
+        result = oneimg.calc_frc_res(
+            Image=Img,
+            calibration_func=cf.calibration_func_RFI
+        )
         self.assertAlmostEqual(result.resolution["resolution"], 32.1159278)
         self.assertIsNotNone(result)
 
@@ -58,7 +62,11 @@ class OneImgFRCTest(unittest.TestCase):
             unit="nm"
         )
 
-        results_df = oneimg.calc_local_frc(Img, tile_size=512, tiles_dir="./data/tiles2/")
+        results_df = oneimg.calc_local_frc(
+            Img,
+            tile_size=512,
+            tiles_dir="./data/tiles2/",
+            calibration_func=cf.calibration_func_RFI)
 
         # Check that tiles are created and saved
         self.assertNotEqual(len(os.listdir("./data/tiles2")), 0)
@@ -79,3 +87,43 @@ class OneImgFRCTest(unittest.TestCase):
         # check that the resolution heatmap is not empty
         self.assertGreater(np.mean(resolution_heatmap), 0)
 
+    def test_set_calibration_func(self):
+        """
+        Tests that calibration function can be set to a custom function
+        In this test, calibration function is set to return the exact same 
+        value, so the result should be equal to uncalibrated.
+        """
+        Img = reader.Image("./data/042.tif")
+        result_calibrated = oneimg.calc_frc_res(
+            Image=Img,
+            calibration_func=lambda x: x  # just return original value
+        )
+        result_uncalibrated = oneimg.calc_frc_res(
+            Image=Img,
+            calibration_func=None
+        )
+        self.assertAlmostEqual(
+            result_calibrated.resolution["resolution"], 
+            result_uncalibrated.resolution["resolution"])
+        self.assertIsNotNone(result_calibrated.resolution["resolution"])
+        self.assertIsNotNone(result_uncalibrated.resolution["resolution"])
+    def test_set_calibration_func(self):
+        """
+        Tests that calibration function can be set to a custom function
+        In this test, calibration function is set to return the exact same 
+        value, so the result should be equal to uncalibrated.
+        """
+        Img = reader.Image("./data/042.tif")
+        result_calibrated = oneimg.calc_frc_res(
+            Image=Img,
+            calibration_func=lambda x: x  # just return original value
+        )
+        result_uncalibrated = oneimg.calc_frc_res(
+            Image=Img,
+            calibration_func=None
+        )
+        self.assertAlmostEqual(
+            result_calibrated.resolution["resolution"], 
+            result_uncalibrated.resolution["resolution"])
+        self.assertIsNotNone(result_calibrated.resolution["resolution"])
+        self.assertIsNotNone(result_uncalibrated.resolution["resolution"])

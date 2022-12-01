@@ -1,7 +1,15 @@
 # quoll
+
+[![DOI](https://zenodo.org/badge/507917208.svg)](https://zenodo.org/badge/latestdoi/507917208)
+[![napari hub](https://img.shields.io/endpoint?url=https://api.napari-hub.org/shields/napari-quoll)](https://napari-hub.org/plugins/napari-quoll)
+
 Image quality assessment for electron tomography
 
+
 # Installation
+
+## Users who prefer graphical user interfaces (i.e. Napari)
+Find Quoll's Napari plugin (napari-quoll) [here](https://github.com/rosalindfranklininstitute/napari-quoll)
 
 ## Users (pip)
 
