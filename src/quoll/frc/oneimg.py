@@ -90,6 +90,9 @@ def miplib_oneimg_FRC_calibrated(
     # Apply correction
     if calibration_func is not None:
         frc_data[0].correlation["frequency"] = calibration_func(freqs)
+    
+    else:
+        frc_data[0].correlation["frequency"] = freqs
 
     # Analyze results
     analyzer = frc_analysis.FourierCorrelationAnalysis(

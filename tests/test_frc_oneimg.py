@@ -93,27 +93,10 @@ class OneImgFRCTest(unittest.TestCase):
         In this test, calibration function is set to return the exact same 
         value, so the result should be equal to uncalibrated.
         """
-        Img = reader.Image("./data/042.tif")
-        result_calibrated = oneimg.calc_frc_res(
-            Image=Img,
-            calibration_func=lambda x: x  # just return original value
+        Img = reader.Image(
+            filename="./data/042.tif",
+            pixel_size=3.3724
         )
-        result_uncalibrated = oneimg.calc_frc_res(
-            Image=Img,
-            calibration_func=None
-        )
-        self.assertAlmostEqual(
-            result_calibrated.resolution["resolution"], 
-            result_uncalibrated.resolution["resolution"])
-        self.assertIsNotNone(result_calibrated.resolution["resolution"])
-        self.assertIsNotNone(result_uncalibrated.resolution["resolution"])
-    def test_set_calibration_func(self):
-        """
-        Tests that calibration function can be set to a custom function
-        In this test, calibration function is set to return the exact same 
-        value, so the result should be equal to uncalibrated.
-        """
-        Img = reader.Image("./data/042.tif")
         result_calibrated = oneimg.calc_frc_res(
             Image=Img,
             calibration_func=lambda x: x  # just return original value
