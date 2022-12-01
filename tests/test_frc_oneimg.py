@@ -49,7 +49,7 @@ class OneImgFRCTest(unittest.TestCase):
         """
         Tests that the one-image FRC can be calculated from quoll.io.reader.Image
         """
-        Img = reader.Image("./data/042.tif")
+        Img = reader.Image("./data/042.tif", pixel_size=3.3724)
         result = oneimg.calc_frc_res(Img)
         self.assertAlmostEqual(result.resolution["resolution"], 32.1159278)
         self.assertIsNotNone(result)
