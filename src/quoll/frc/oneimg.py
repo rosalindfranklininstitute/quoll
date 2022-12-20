@@ -29,8 +29,8 @@ from miplib.analysis.resolution.fourier_ring_correlation import FRC
 from miplib.data.containers.fourier_correlation_data import \
     FourierCorrelationDataCollection
 from miplib.data.containers.image import Image as miplibImage
-from miplib.data.io import read as miplibread
 from miplib.processing import windowing
+
 from quoll.io import reader, tiles
 from quoll.frc import frc_calibration_functions as cf
 
@@ -45,13 +45,13 @@ def miplib_oneimg_FRC_calibrated(
     """ Calculate single image FRC, adapted from miplib
 
     Args:
-        image (miplib image object): x-values in the FRC curve
+        image (miplib.data.containers.image.Image): Image to be evaluated
         args (argparse Namespace): parameters for FRC calculation.
                                    see *miplib.ui.frc_options* for details.
                                    default = None
-        calibration_func (callable): function that applies a correction factor to the
-                                     frequencies of the FRC curve to match the 1 img
-                                     FRC to the 2 img FRC
+        calibration_func (callable): function that applies a correction factor 
+                                     to the frequencies of the FRC curve to
+                                     match the 1 img FRC to the 2 img FRC
 
     Returns:
         FourierCorrelationData object: special dict which contains the results.
@@ -90,9 +90,16 @@ def miplib_oneimg_FRC_calibrated(
     # Apply correction
     if calibration_func is not None:
         frc_data[0].correlation["frequency"] = calibration_func(freqs)
+    
+    else:
+        frc_data[0].correlation["frequency"] = freqs
 
     # Analyze results
-    analyzer = frc_analysis.FourierCorrelationAnalysis(frc_data, image1.spacing[0], args)
+    analyzer = frc_analysis.FourierCorrelationAnalysis(
+        frc_data, 
+        image1.spacing[0], 
+        args
+    )
 
     result = analyzer.execute(z_correction=z_correction)[0]
 
@@ -119,7 +126,10 @@ def calc_frc_res(
         FourierCorrelationData object: special dict which contains the results.
     """
     if Image.img_dims[0] == Image.img_dims[1]:
-        miplibImg = miplibread.get_image(Image.filename)
+        miplibImg = miplibImage(
+            Image.img_data,
+            (Image.pixel_size, Image.pixel_size)
+        )
         args = opts.get_frc_script_options([None])
         result = miplib_oneimg_FRC_calibrated(
             miplibImg,
@@ -134,38 +144,48 @@ def calc_frc_res(
 def calc_local_frc(
     Image: reader.Image,
     tile_size: int,
-    tiles_dir: str,
+    tiles_dir: Optional[str] = None,
     calibration_func: Optional[Callable] = None
 ):
     """ Calculates local FRC on a quoll Image
 
-    Image is split into square tiles and FRC resolution is calculated for all tiles
+    Image is split into square tiles and FRC resolution is calculated for all
+    tiles
 
     Args:
         Image (reader.Image): Quoll.io.reader.Image instance
         tile_size (int): length of one side of the square tile in pixels
-        tiles_dir (str): path to directory holding tiles
+        tiles_dir (str): path to directory holding tiles, none by default.
+                         Tiles only saved if tiles_dir is not none.
         calibration_func (callable): function that applies a correction factor to the
                                     frequencies of the FRC curve to match the 1 img
                                     FRC to the 2 img FRC. If None, no calibration is
                                     applied.
-
     Returns:
         pandas DataFrame: df containing the resolutions in physical units
                           of all tiles
     """
     # Create patches
-    tiles.create_patches(Image, tile_size, tiles_dir)
+    tiles.create_patches(
+        Image=Image,
+        tile_size=tile_size,
+        tiles_output=tiles_dir
+    )
 
     # Calculate local FRC on the patches
     resolutions = {"Resolution": {}}
-    for tile in os.listdir(tiles_dir):
+    for i in list(Image.tiles.keys()):
         try:
-            Img = reader.Image(os.path.join(tiles_dir, tile))
-            result = calc_frc_res(Img, calibration_func)
-            resolutions["Resolution"][tile] = result.resolution["resolution"]
+            Img = reader.Image(
+                img_data=Image.tiles[i],
+                pixel_size=Image.pixel_size,
+                unit=Image.unit,
+            )
+            result = calc_frc_res(Img)
+            resolutions["Resolution"][i] = result.resolution["resolution"]
+
         except:
-            resolutions["Resolution"][tile] = np.nan
+            resolutions["Resolution"][i] = np.nan
 
     return pd.DataFrame.from_dict(resolutions)
 

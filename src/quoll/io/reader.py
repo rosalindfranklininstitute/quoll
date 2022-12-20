@@ -12,15 +12,16 @@
 # either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-import mrcfile
 import os
-import skimage
-import tifffile
+from typing import Optional
+
 import matplotlib.pyplot as plt
+import mrcfile
+import numpy as np
+import tifffile
 
 from quoll.io.mdoc_parser import Mdoc
 
-from typing import Optional
 
 class Image:
     """
@@ -29,23 +30,33 @@ class Image:
 
     def __init__(
         self,
-        filename: str,
+        filename: Optional[str] = None,
+        img_data: Optional[np.ndarray] = None,
         pixel_size: Optional[float] = None,
         unit: Optional[str] = None,
     ):
-        """
-        Initialises an image object
+        """Class holding Image data + metadata
 
         Args:
-            filename (str): Path to the image
-            pixel_size (Optional[float], optional): Size of pixel in physical units. Defaults to None.
-            unit (Optional[str], optional): Unit of pixel size. Defaults to None.
+            filename (Optional[str], optional): Filename for the image,
+                in tiff or mrc. Defaults to None.
+            img_data (Optional[np.ndarray], optional): Array holding image
+                data. Defaults to None.
+            pixel_size (Optional[float], optional): Pixel size. 
+                Defaults to None.
+            unit (Optional[str], optional): Physical units. Defaults to None.
         """
 
         self.filename = filename
         self.pixel_size = pixel_size
         self.unit = unit
-        self.get_image()
+
+        if img_data is not None:
+            self.img_data = img_data
+            self.img_dims = self.img_data.shape
+            self.img_bitdepth = self.img_data.dtype
+        else:
+            self.get_image()
 
         # extra attributes for holding tiles
         self.tiles = {}
@@ -55,15 +66,23 @@ class Image:
         """
         Import an image
         """
-        if os.path.splitext(self.filename)[1] != ".mrc":
-            self.img_data = tifffile.imread(self.filename)
-
-        elif os.path.splitext(self.filename)[1] == ".mrc":
-            with mrcfile.open(self.filename) as mrc:
-                self.img_data = mrc.data
         
+        if self.filename is not None:
+            if os.path.splitext(self.filename)[1] != ".mrc":
+                self.img_data = tifffile.imread(self.filename)
+
+            elif os.path.splitext(self.filename)[1] == ".mrc":
+                with mrcfile.open(self.filename) as mrc:
+                    self.img_data = mrc.data
+            
+            else:
+                raise IOError(
+                    "Image cannot be imported. Quoll uses skimage and mrcfile"
+                )
         else:
-            raise IOError("Image cannot be imported. Quoll uses skimage and mrcfile")
+            raise IOError(
+                "No filename or image data has been specified."
+            )
         
         self.img_dims = self.img_data.shape
         self.img_bitdepth = self.img_data.dtype
@@ -99,7 +118,11 @@ class TiltSeries(Image):
         mdoc_file: Optional[str] = None,
         tilt_angle_file: Optional[str] = None,
     ):
-        super().__init__(filename, pixel_size, unit)
+        super().__init__(
+            filename=filename,
+            pixel_size=pixel_size,
+            unit=unit
+        )
         self.img_type = "TiltSeries"
         self.mdoc_file = mdoc_file
         self.tilt_angle_file = tilt_angle_file

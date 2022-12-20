@@ -15,6 +15,7 @@
 
 # Utility imports
 import unittest
+import numpy as np
 
 from quoll.io import reader
 
@@ -73,6 +74,21 @@ class ReaderTest(unittest.TestCase):
         self.assertEqual(Img.pixel_size, 13.12)
         self.assertEqual(Img.unit, "Angstrom")
         self.assertEqual(Img.img_dims, (41, 720, 512))
+
+    def test_reader_nparray_input(self):
+        """
+        Tests that Image can be created from np arrays
+        """
+        Img = reader.Image(
+            img_data=np.random.rand(5,10,10),
+            pixel_size=1.0,
+            unit="nm"
+        )
+
+        self.assertIsNone(Img.filename)
+        self.assertEqual(Img.img_dims, (5,10,10))
+        self.assertEqual(Img.pixel_size, 1.0)
+        self.assertEqual(Img.unit, "nm")
 
     def test_TS_importer_mrc_mdoc(self):
         """

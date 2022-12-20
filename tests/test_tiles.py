@@ -52,7 +52,7 @@ class TilesTest(unittest.TestCase):
             Img,
             tile_size=128,
             tiles_output=tiles_dir,
-            pad=True
+            pad=True,
         )
 
         self.assertEqual(len(os.listdir(tiles_dir)), 4)
@@ -83,7 +83,7 @@ class TilesTest(unittest.TestCase):
             Img,
             tile_size=128,
             tiles_output=tiles_dir,
-            pad=True
+            pad=True,
         )
 
         reassembled = tiles.reassemble_tiles(
