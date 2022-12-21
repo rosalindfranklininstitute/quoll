@@ -7,7 +7,7 @@ name = "quoll"
 version = "0.0.3"
 dependencies = [
     "matplotlib",
-    "miplib @ git+https://github.com/elainehoml/miplib.git@frc_deps_only",
+    "quoll-compatible-miplib",
     "mrcfile",
     "notebook",
     "numpy",
