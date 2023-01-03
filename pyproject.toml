@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "quoll"
-version = "0.0.3"
+version = "0.0.4"
 dependencies = [
     "matplotlib",
     "quoll-compatible-miplib",
@@ -15,6 +15,7 @@ dependencies = [
     "scikit-image",
     "scipy",
     "tifffile",
+    "tqdm",
 ]
 authors = [
     {name="Elaine Ho", email="elaine.ho@rfi.ac.uk"}
