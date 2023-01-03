@@ -30,9 +30,10 @@ from miplib.data.containers.fourier_correlation_data import \
     FourierCorrelationDataCollection
 from miplib.data.containers.image import Image as miplibImage
 from miplib.processing import windowing
+from tqdm import tqdm
 
-from quoll.io import reader, tiles
 from quoll.frc import frc_calibration_functions as cf
+from quoll.io import reader, tiles
 
 
 def miplib_oneimg_FRC_calibrated(
@@ -51,7 +52,10 @@ def miplib_oneimg_FRC_calibrated(
                                    default = None
         calibration_func (callable): function that applies a correction factor 
                                      to the frequencies of the FRC curve to
-                                     match the 1 img FRC to the 2 img FRC
+                                     match the 1 img FRC to the 2 img FRC.
+                                     Import from quoll.frc.frc_calibration_
+                                     functions. If None, no calibration is
+                                     performed.
 
     Returns:
         FourierCorrelationData object: special dict which contains the results.
@@ -114,10 +118,11 @@ def calc_frc_res(
 
     Args:
         Image (reader.Image): Quoll.io.reader.Image instance
-        calibration_func (callable): function that applies a correction factor to the
-                                    frequencies of the FRC curve to match the 1 img
-                                    FRC to the 2 img FRC. If None, no calibration is
-                                    applied.
+        calibration_func (callable): function that applies a correction factor 
+                                     to the frequencies of the FRC curve to
+                                     match the 1 img FRC to the 2 img FRC. If 
+                                     None, no calibration is applied. Import
+                                     from quoll.frc.frc_calibration_functions.
 
     Raises:
         ValueError: if Image is not square
@@ -157,10 +162,11 @@ def calc_local_frc(
         tile_size (int): length of one side of the square tile in pixels
         tiles_dir (str): path to directory holding tiles, none by default.
                          Tiles only saved if tiles_dir is not none.
-        calibration_func (callable): function that applies a correction factor to the
-                                    frequencies of the FRC curve to match the 1 img
-                                    FRC to the 2 img FRC. If None, no calibration is
-                                    applied.
+        calibration_func (callable): function that applies a correction factor
+                                     to the frequencies of the FRC curve to
+                                     match the 1 img FRC to the 2 img FRC. 
+                                     If None, no calibration is applied. Import
+                                     from quoll.frc.frc_calibration_functions.
     Returns:
         pandas DataFrame: df containing the resolutions in physical units
                           of all tiles
@@ -174,14 +180,14 @@ def calc_local_frc(
 
     # Calculate local FRC on the patches
     resolutions = {"Resolution": {}}
-    for i in list(Image.tiles.keys()):
+    for i in tqdm(list(Image.tiles.keys())):
         try:
             Img = reader.Image(
                 img_data=Image.tiles[i],
                 pixel_size=Image.pixel_size,
                 unit=Image.unit,
             )
-            result = calc_frc_res(Img)
+            result = calc_frc_res(Img, calibration_func)
             resolutions["Resolution"][i] = result.resolution["resolution"]
 
         except:
@@ -206,11 +212,13 @@ def plot_resolution_heatmap(
         Image (reader.Image): Quoll.reader.Image object
         results_df (pd.DataFrame): output of `oneimg.calc_local_frc`
         show (Optional[bool], optional): Show the overlay. Defaults to False.
-        save_overlay (Optional[bool], optional): Saves overlay as svg. Defaults to False.
-        save_heatmap (Optional[bool], optional): Saves heatmap as tif. Defaults to False.
+        save_overlay (Optional[bool], optional): Saves overlay as svg. 
+                                                 Defaults to False.
+        save_heatmap (Optional[bool], optional): Saves heatmap as tif. 
+                                                 Defaults to False.
 
     Returns:
-        _type_: _description_
+        array: image reassembled from tiles
     """
     tileshape = list(Image.tiles.values())[0].shape
     restiles = [np.full(shape=tileshape, fill_value=res) for res in np.array(results_df.Resolution)]
