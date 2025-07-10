@@ -15,7 +15,7 @@ Find Quoll's Napari plugin (napari-quoll) [here](https://github.com/rosalindfran
 
 1. Create a new conda environment, name it whatever you'd like, but don't forget to activate it
 ```
-conda create -n quoll python=3.7
+conda create -n quoll python=3.8
 conda activate quoll
 ```
 
@@ -35,7 +35,7 @@ git clone https://github.com/rosalindfranklininstitute/quoll.git
 2. Navigate to the Quoll directory and create a new conda environment for Quoll. Don't forget to activate this environment
 
 ```
-conda env create -n quoll python=3.7
+conda env create -n quoll python=3.8
 conda activate quoll
 ```
 
@@ -71,6 +71,6 @@ To run the one image FRC on a single image split into square tiles of length `n`
 oneimgFRC <image_filename> <pixel_size> --tile_size <n, e.g., 128> --tiles_dir <tiles_dir>
 ```
 
-The resolution results, resolution heatmap, and the overlay of the resolution heatmap on the image can be saved with the flags `--save_csv`, `--save_overlay`, `--save_heatmap`. 
+The resolution results, resolution heatmap, and the overlay of the resolution heatmap on the image can be saved with the flags `--save_csv`, `--save_overlay`, `--save_heatmap`.
 
 The resolution heatmap overlaid on the original image can be displayed with the `--show_plot` flag.
