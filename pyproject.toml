@@ -16,6 +16,7 @@ dependencies = [
     "scipy",
     "tifffile",
     "tqdm",
+    "scipy<=1.12.0",
 ]
 authors = [
     {name="Elaine Ho", email="elaine.ho@rfi.ac.uk"}
@@ -39,5 +40,5 @@ exclude = ["tests"]  # exclude packages matching these glob patterns (empty by d
 "Homepage" = "https://github.com/rosalindfranklininstitute/quoll"
 "Bug Tracker" = "https://github.com/rosalindfranklininstitute/quoll/issues"
 
-[project.scripts] 
+[project.scripts]
 oneimgfrc = "quoll.ui.frc_oneimg_ui:oneimgfrc"
